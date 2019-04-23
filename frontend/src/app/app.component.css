@@ -1,0 +1,6 @@
+div.buttons {
+    margin-block-end: 10px;
+}
+table tbody tr {
+    cursor: pointer;
+}
