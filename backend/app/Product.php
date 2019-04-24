@@ -7,11 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $table = 'products';
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [ 'code','name', 'url', ];
+    protected $fillable = ['code', 'name', 'url'];
 }
