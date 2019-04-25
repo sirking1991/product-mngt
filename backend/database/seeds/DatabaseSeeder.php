@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        foreach (range(1, 20) as $index) {
+        foreach (range(1, 100) as $index) {
             DB::table('products')->insert([
                 'code' => $faker->ean13,
                 'name' => $faker->sentence($nbWords = 6, $variableNbWords = true),

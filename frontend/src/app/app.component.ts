@@ -23,7 +23,6 @@ export class AppComponent {
   }
 
   getProducts() {
-    this.products = [];
     this.rest.getProducts().subscribe((data:Product[]) => {
       this.products = data;
     });
@@ -74,9 +73,17 @@ export class AppComponent {
 
   _handleError(err) {
     console.log(err);
-    if (409==err.status) {
+    if (typeof err.error === 'object' ) {
       this.messageType='ERROR';
-      this.message = err.error
+      this.message = '';
+      if( undefined != err.error.code ) this.message += ' ' + err.error.code[0];
+      if( undefined != err.error.name ) this.message += ' ' + err.error.name[0];
+      if( undefined != err.error.url ) this.message += ' ' + err.error.url[0];
+    } else {
+      if (409==err.status) {
+        this.messageType='ERROR';
+        this.message = err.error
+      }
     }
   }
 
