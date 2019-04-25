@@ -2,7 +2,7 @@
 
 A sample app that handles CRUD of products.
 
-It uses PHP/Lumen/MySql on the backend. Architectured in a Microservice exposing REST endoints.
+It uses PHP/Lumen/MySql on the backend. Uses Microservice architecture and exposing REST endpoints.
 
 Anglar7/Bootstrap on the frontend that consumes RESTFul API
 
