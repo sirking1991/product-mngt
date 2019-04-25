@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ProductsService } from './services/products.service';
+import { Product } from './product';
 
 declare var $: any;
 
@@ -9,9 +10,9 @@ declare var $: any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  products:any = [];
+  products: Product[];
 
-  productData = { code:'', name:'', url:'' };
+  productData: Product = null;
 
   newRecord: boolean;
   messageType: string ='ERROR';
@@ -23,50 +24,72 @@ export class AppComponent {
 
   getProducts() {
     this.products = [];
-    this.rest.getProducts().subscribe((data: {}) => {
-      console.log(data);
+    this.rest.getProducts().subscribe((data:Product[]) => {
       this.products = data;
     });
   }
 
   open(i) {
-    this.newRecord = true
-    this.productData = {
-      code:'', name:'', url:''
-    }
+    this.newRecord = true;
+    this.message = '';
+    this.messageType = '';
+    this.productData = {id:0, code:'', name:'', url:'', created_at: null, edited_at: null}
+
     // if id was passed, then set productData
-    if( -1!=i ) {
-      this.productData = this.products[i];
+    if (-1 != i) {
+      this.productData = JSON.parse(JSON.stringify(this.products[i]));
       this.newRecord = false
     }
 
     $('#myModal').modal('show');
   }
 
-  saveBtnClick() {
-    if( this.newRecord ) {
+  saveBtnClick() 
+  {
+    if (this.newRecord)
+      this._addProduct();      
+    else
       this._updateProduct();
-    } else {
-      this._addProduct();
+  }
+
+  _addProduct() 
+  {
+    this.rest.addProduct(this.productData).subscribe((result) => {
+      $('#myModal').modal('hide');
+      this.getProducts();
+    }, (err) => {
+      this._handleError(err);
+    });
+  }
+
+  _updateProduct() 
+  {
+    this.rest.updateProduct(this.productData).subscribe((result) => {
+      $('#myModal').modal('hide');
+      this.getProducts();
+    }, (err) => {
+      this._handleError(err);
+    });
+  }
+
+  _handleError(err) {
+    console.log(err);
+    if (409==err.status) {
+      this.messageType='ERROR';
+      this.message = err.error
     }
   }
 
-  _addProduct() {
-    this.rest.addProduct(this.productData).subscribe((result) => {
-      this.messageType = 'INFO';
-      this.message = "Record saved";
-    }, (err) => {
-      console.log(err);
-    });
-  }
+  delete()
+  {
+    if (!confirm('Are you sure you want to delete?')) return;
 
-  _updateProduct() {
-    this.rest.updateProduct(this.productData).subscribe((result) => {
-      this.messageType = 'INFO';
-      this.message = "Record updated";
+    this.rest.deleteProduct(this.productData).subscribe((result) => {
+      $('#myModal').modal('hide');
+      this.getProducts();
     }, (err) => {
-      console.log(err);
-    });
+      this._handleError(err);
+    });    
   }
 
 

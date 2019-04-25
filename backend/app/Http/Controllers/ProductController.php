@@ -9,63 +9,91 @@ use Validator;
 class ProductController extends Controller
 {
     var $validationRules = [
-        'code' => 'required|unique:products',
-        'name' => 'required|max:250',
-        'url' => 'required|unique:products'
+        'code' => 'bail|required',
+        'name' => 'bail|required',
+        'url' => 'bail|required'
     ];
+
     var $validationMessages = [
         'code.unique' => 'The code already exist',
         'url.unique' => 'The url already exist',
     ];
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct() {}
+
     public function index()
     {
         return response()->json(Product::all(), 200);
     }
+
     public function show($id)
     {
         $product = Product::find($id);
         return response()->json($product, 200);
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), $this->validationRules, $this->validationMessages);
-        if($validator->fails()) return response()->json($validator->errors(), 400);
+        if($validator->fails()) 
+            return response()->json($validator->errors(), 400);
         
-        $product = Product::create($request->all());
+        try {
+            $product = Product::create($request->all());
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json("Conflict with existing ".$this->checkConflict($e), 409);     // conflict
+        }
+
         return response()->json($product, 201);
     }
+
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), $this->validationRules, $this->validationMessages);
-        if($validator->fails()) return response()->json($validator->errors(), 400);
+        if ($validator->fails()) 
+            return response()->json("Conflict with existing ".$this->checkConflict($e), 409);     // conflict
+
         $product = Product::find($id);
-        if( ! $product ) {
-            return response()->json("Product not found", 404);
+        if (!$product) {
+            return response()->json(null, 404);
         }
+
         $product->code = $request->input('code');
         $product->name = $request->input('name');
         $product->url = $request->input('url');
-        $product->save();
+
+        try {
+            $product->save();
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json("Conflict with existing ".$this->checkConflict($e), 409);     // conflict
+        }
         
         return response()->json($product, 200);
     }
-    public function delete(Request $request, Product $product)
+
+    private function checkConflict($e)
     {
+        if( false!==strpos($e->errorInfo[2],'products_code_unique') ) {
+            return 'CODE';
+        } else {
+            return 'URL';
+        }
+    }
+
+    public function delete(Request $request, $id)
+    {
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(null, 404);
+        }
+
         $product->delete();
         return response()->json(null, 204);
     }
     
-    public function errors()
-    {
-        return response()->json(['message'=>'Payment is required'], 501);
-    }
 }

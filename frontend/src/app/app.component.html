@@ -4,10 +4,9 @@
     <h2>Product Management</h2>
 
     <div class="buttons">
-        <button class="btn btn-primary" id='btn_new' (click)="open(-1)">New product</button>&nbsp;
-        <button class="btn btn-secondary" id='btn_new'>Find duplicates</button>
+      <button class="btn btn-primary" id='btn_new' (click)="open(-1)">New product</button>&nbsp;
     </div>
-    
+
     <table class="table table-hover table-bordered">
       <thead class='thead-dark'>
         <tr>
@@ -17,10 +16,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let product of products; let i = index" (click)="open(i)">
-          <td scope="row">{{product.code}}</td>
-          <td scope="row">{{product.name}}</td>
-          <td scope="row">{{product.url}}</td>
+        <tr *ngFor="let p of products; let i = index" (click)="open(i)">
+          <td scope="row">{{p.code}}</td>
+          <td scope="row">{{p.name}}</td>
+          <td scope="row">{{p.url}}</td>
         </tr>
       </tbody>
     </table>
@@ -31,7 +30,8 @@
 
 
 <!-- Modal -->
-<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div *ngIf="null!=productData" class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -41,7 +41,10 @@
         </button>
       </div>
       <div class="modal-body">
-        <div *ngIf="''!=message" class="alert alert-{{messageType=='ERROR'?'danger':'success'}}" role="alert">{{message}}</div>
+        <div *ngIf="''!=message" class="alert alert-{{messageType=='ERROR'?'danger':'success'}}" role="alert">
+          {{message}}
+        </div>
+
         <form>
           <div class="form-group">
             <label for="code">Code</label>
@@ -50,16 +53,16 @@
           <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" name='name' [(ngModel)]="productData.name">
-          </div>          
+          </div>
           <div class="form-group">
             <label for="url">URL</label>
             <input type="text" class="form-control" name='url' [(ngModel)]="productData.url">
-          </div>          
+          </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-danger" *ngIf="!newRecord">Delete</button>
+        <button type="button" class="btn btn-danger" *ngIf="!newRecord" (click)="delete()">Delete</button>
         <button type="button" class="btn btn-primary" (click)="saveBtnClick()">{{newRecord?'Save':'Update'}}</button>
       </div>
     </div>
