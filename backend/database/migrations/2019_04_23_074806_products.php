@@ -21,9 +21,9 @@ class Products extends Migration
         });
 
         DB::statement("CREATE VIEW duplicate_names AS 
-            SELECT a.*
+            SELECT a.*, b.ctr
             FROM products a
-            JOIN (SELECT name, COUNT(*)
+            JOIN (SELECT name, COUNT(*) as ctr
                 FROM products
                 GROUP BY name
                 HAVING COUNT(*) > 1) b on a.name=b.name
@@ -37,7 +37,8 @@ class Products extends Migration
      */
     public function down()
     {
+        DB::statement("DROP VIEW duplicate_names");
         Schema::drop('products');
-        DB::statement(" DROP VIEW duplicate_names");
+        
     }
 }

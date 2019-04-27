@@ -1,21 +1,20 @@
 <?php
 
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-
 class ExampleTest extends TestCase
 {
     /**
-     * A basic test example.
+     * A basic functional test example.
      *
      * @return void
      */
-    public function testExample()
+    public function testBasicExample()
     {
-        $this->get('/');
+        $response = $this->json('GET', '/products');
 
-        $this->assertEquals(
-            $this->app->version(), $this->response->getContent()
-        );
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'created_at' => true,
+            ]);
     }
 }

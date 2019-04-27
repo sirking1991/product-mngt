@@ -41,13 +41,16 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::find($id);
+
+        if (!$product) return response()->json('Product not found', 404);
+
         return response()->json($product, 200);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), $this->validationRules, $this->validationMessages);
-        if($validator->fails()) 
+        if ($validator->fails()) 
             return response()->json($validator->errors(), 400);
         
         try {
@@ -63,12 +66,10 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), $this->validationRules, $this->validationMessages);
         if ($validator->fails()) 
-            return response()->json("Conflict with existing ".$this->checkConflict($e), 409);     // conflict
+            return response()->json($validator->errors(), 400);
 
         $product = Product::find($id);
-        if (!$product) {
-            return response()->json(null, 404);
-        }
+        if (!$product) return response()->json('Product not found', 404);
 
         $product->code = $request->input('code');
         $product->name = $request->input('name');
@@ -85,19 +86,14 @@ class ProductController extends Controller
 
     private function checkConflict($e)
     {
-        if( false!==strpos($e->errorInfo[2],'products_code_unique') ) {
-            return 'CODE';
-        } else {
-            return 'URL';
-        }
+        return false !== strpos($e->errorInfo[2],'products_code_unique') ? 'CODE' : 'URL';
     }
 
     public function delete(Request $request, $id)
     {
         $product = Product::find($id);
-        if (!$product) {
-            return response()->json(null, 404);
-        }
+        
+        if (!$product) return response()->json('Product not found', 404);
 
         $product->delete();
         return response()->json(null, 204);
