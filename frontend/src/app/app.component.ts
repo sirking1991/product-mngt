@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ProductsService } from './services/products.service';
 import { Product } from './product';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
 
@@ -18,14 +19,36 @@ export class AppComponent {
   messageType: string ='ERROR';
   message: string = '';
 
-  constructor(private rest: ProductsService) {
+  viewType: string = 'ALL';
+
+  constructor(private rest: ProductsService) 
+  {
     this.getProducts();
   }
 
-  getProducts() {
-    this.rest.getProducts().subscribe((data:Product[]) => {
-      this.products = data;
-    });
+  getProducts() 
+  {
+    if ('DUPLICATENAMES'==this.viewType) {
+      this.rest.getDuplicateNames().subscribe((data:Product[]) => {
+        this.products = data;
+      });  
+    } else {
+      this.rest.getProducts().subscribe((data:Product[]) => {
+        this.products = data;
+      });
+    }
+
+  }
+
+  loadDuplicateNames()
+  {
+    this.viewType = 'DUPLICATENAMES';
+    this.getProducts();
+  }
+
+  loadAllProducts(){
+    this.viewType = 'ALL';
+    this.getProducts();    
   }
 
   open(i) {

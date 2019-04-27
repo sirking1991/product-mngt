@@ -31,6 +31,12 @@ export class ProductsService
     return this.http.get(endpoint).pipe(
       map(this.extractData));
   }
+
+  getDuplicateNames(): Observable<any> 
+  {
+    return this.http.get(endpoint + '/duplicatenames').pipe(
+      map(this.extractData));
+  } 
   
   getProduct(id): Observable<any> 
   {

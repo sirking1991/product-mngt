@@ -13,6 +13,8 @@
 
 $router->get('products', 'ProductController@index');
 
+$router->get('products/duplicatenames', 'ProductController@duplicateNames');
+
 $router->get('products/{id}', 'ProductController@show');
 
 $router->post('products', 'ProductController@store');

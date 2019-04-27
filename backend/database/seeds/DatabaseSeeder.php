@@ -19,5 +19,28 @@ class DatabaseSeeder extends Seeder
                 'url' => $faker->url,
             ]);
         }
+
+        // duplicate names
+        DB::table('products')->insert([
+            'code' => $faker->ean13,
+            'name' => "SAMPLE DUPLICATE NAME #1",
+            'url' => $faker->url,
+        ]);        
+        DB::table('products')->insert([
+            'code' => $faker->ean13,
+            'name' => "SAMPLE DUPLICATE NAME #1",
+            'url' => $faker->url,
+        ]);                
+        DB::table('products')->insert([
+            'code' => $faker->ean13,
+            'name' => "SAMPLE DUPLICATE NAME #2",
+            'url' => $faker->url,
+        ]);                
+        DB::table('products')->insert([
+            'code' => $faker->ean13,
+            'name' => "SAMPLE DUPLICATE NAME #2",
+            'url' => $faker->url,
+        ]);                
+
     }
 }

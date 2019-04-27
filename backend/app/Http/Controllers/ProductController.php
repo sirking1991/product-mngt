@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use Illuminate\Http\Request;
 use Validator;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -29,6 +30,12 @@ class ProductController extends Controller
     public function index()
     {
         return response()->json(Product::all(), 200);
+    }
+
+    public function duplicateNames()
+    {
+        $product = DB::table('duplicate_names')->get();
+        return response()->json($product, 200);
     }
 
     public function show($id)

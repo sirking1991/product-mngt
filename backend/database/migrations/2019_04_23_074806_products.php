@@ -19,6 +19,16 @@ class Products extends Migration
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
+
+        DB::statement("CREATE VIEW duplicate_names AS 
+            SELECT a.*
+            FROM products a
+            JOIN (SELECT name, COUNT(*)
+                FROM products
+                GROUP BY name
+                HAVING COUNT(*) > 1) b on a.name=b.name
+            ORDER BY a.name        
+        ");
     }
     /**
      * Reverse the migrations.
@@ -28,5 +38,6 @@ class Products extends Migration
     public function down()
     {
         Schema::drop('products');
+        DB::statement(" DROP VIEW duplicate_names");
     }
 }

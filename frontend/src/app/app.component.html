@@ -3,7 +3,9 @@
     <h2>Product Management</h2>
 
     <div class="buttons">
-      <button class="btn btn-primary" id='btn_new' (click)="open(-1)">New product</button>&nbsp;
+      <button class="btn btn-primary" (click)="open(-1)">New product</button>&nbsp;
+      <button *ngIf="'ALL'==viewType" class="btn btn-secondary" (click)="loadDuplicateNames()">View products with same names</button>&nbsp;
+      <button *ngIf="'DUPLICATENAMES'==viewType" class="btn btn-secondary" (click)="loadAllProducts()">View all products</button>&nbsp;
     </div>
 
     <table class="table table-hover table-bordered">
