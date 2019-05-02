@@ -20,7 +20,7 @@ class Products extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
 
-        DB::statement("CREATE VIEW duplicate_names AS 
+        DB::statement("CREATE OR REPLACE VIEW duplicate_names AS 
             SELECT a.*, b.ctr
             FROM products a
             JOIN (SELECT name, COUNT(*) as ctr

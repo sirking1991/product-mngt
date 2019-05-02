@@ -59,7 +59,7 @@ class ProductController extends Controller
             return response()->json("Conflict with existing ".$this->checkConflict($e), 409);     // conflict
         }
 
-        return response()->json($product, 201);
+        return response()->json($product, 200);
     }
 
     public function update(Request $request, $id)
