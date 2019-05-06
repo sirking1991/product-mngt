@@ -18,6 +18,6 @@ Setup and run the backend:
 - php -S localhost:8000 -t public
 
 Setup and run the frontend:
-- cd to backend
+- cd to frontend
 - ng i
 - ng serve --port 8001
